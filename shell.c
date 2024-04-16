@@ -1,4 +1,5 @@
 #include "shell.h"
+#define TOK_DELIM " \t\r\n\a"
 
 // UNIX Command Line for shell()
 void shell(void)
@@ -60,4 +61,27 @@ char **split_line(char *line)
         fprintf(stderr, "Shell: Allocation error in shell while splitting lines.\n");
         exit(EXIT_FAILURE);
     }
+    token = strok(line, TOK_DELIM);
+    while (token != NULL)
+    {
+        if (token[0] == '#')
+        {
+            break;
+        }
+        tokens[i] = token;
+        i++;
+        if (i >= bufsize)
+        {
+            bufsize += bufsize;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+            {
+                fprintf(stderr, "Shell: Reallocation error.");
+                exit(EXIT_FAILURE);
+            }
+        }
+        token = strok(line, TOK_DELIM);
+    }
+    tokens[i] = NULL;
+    return (tokens);
 }
